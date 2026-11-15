@@ -175,6 +175,91 @@ namespace Mesa_De_Partes_Sistema
                 Console.WriteLine("El documento no se guardó.");
             }
         }
+          static void BuscarDocumento()
+        {
+            Console.Write("Ingrese código, DNI o tipo de documento: ");
+            string busqueda = Console.ReadLine().ToUpper();
+            int encontrados = 0;
+            for (int i = 0; i < total_documentos; i++)
+            {
+                if (codigos[i].ToUpper() == busqueda ||
+                    dni_usuarios[i] == busqueda ||
+                    tipos[i] == busqueda)
+                {
+                    MostrarDocumento(i);
+                    encontrados++;
+                }
+            }
+
+            if (encontrados == 0)
+            {
+                Console.WriteLine("No se encontraron documentos.");
+            }
+        }
+
+        static void VerDocumentosDni()
+        {
+            string dni = LeerDni("Ingrese el DNI: ");
+            int cantidad = 0;
+
+            for (int i = 0; i < total_documentos; i++)
+            {
+                if (dni_usuarios[i] == dni)
+                {
+                    MostrarDocumento(i);
+                    cantidad++;
+                }
+            }
+
+            Console.WriteLine("Esta persona tiene " + cantidad + " documento(s).");
+        }
+
+        static void EliminarDocumento()
+        {
+            string dni = LeerDni("Ingrese el DNI del usuario: ");
+            int cantidad = 0;
+
+            for (int i = 0; i < total_documentos; i++)
+            {
+                if (dni_usuarios[i] == dni)
+                {
+                    MostrarDocumento(i);
+                    cantidad++;
+                }
+            }
+
+            if (cantidad == 0)
+            {
+                Console.WriteLine("No hay documentos de ese DNI.");
+                return;
+            }
+
+            Console.Write("Escriba el código del documento que desea eliminar: ");
+            string codigo = Console.ReadLine();
+            int posicion = -1;
+
+            for (int i = 0; i < total_documentos; i++)
+            {
+                if (dni_usuarios[i] == dni && codigos[i] == codigo)
+                {
+                    posicion = i;
+                }
+            }
+
+            if (posicion == -1)
+            {
+                Console.WriteLine("No se encontró ese código para el DNI indicado.");
+                return;
+            }
+
+            for (int i = posicion; i < total_documentos - 1; i++)
+            {
+                CopiarDocumento(i + 1, i);
+            }
+
+            total_documentos--;
+            GuardarDocumentos();
+            Console.WriteLine("Documento eliminado.");
         }
     }
 }
