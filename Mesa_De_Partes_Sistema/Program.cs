@@ -116,6 +116,65 @@ namespace Mesa_De_Partes_Sistema
                         break;
                 }
             }
+            static void RegistrarDocumento()
+        {
+            if (total_documentos >= max_documentos)
+            {
+                Console.WriteLine("Se alcanzó el máximo de documentos.");
+                return;
+            }
+
+            Console.WriteLine("Tipo de documento:");
+            Console.WriteLine("1. Solicitud");
+            Console.WriteLine("2. Oficio");
+            Console.WriteLine("3. Carta");
+            int opcion_tipo = LeerNumero("Elija el tipo: ", 1, 3);
+
+            if (opcion_tipo == 1)
+            {
+                tipos[total_documentos] = "SOLICITUD";
+            }
+            else if (opcion_tipo == 2)
+            {
+                tipos[total_documentos] = "OFICIO";
+            }
+            else
+            {
+                tipos[total_documentos] = "CARTA";
+            }
+
+            fechas[total_documentos] = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            codigos[total_documentos] = "DOC-" + DateTime.Now.ToString("yyyyMMddHHmmss") + total_documentos;
+
+            Console.Write("Nombre del usuario: ");
+            nombres_usuarios[total_documentos] = Console.ReadLine();
+
+            dni_usuarios[total_documentos] = LeerDni("DNI (8 dígitos): ");
+            telefonos_usuarios[total_documentos] = LeerTelefono("Teléfono del usuario (9 dígitos): ");
+
+            Console.Write("Descripción del documento: ");
+            descripciones[total_documentos] = Console.ReadLine();
+
+            nombres_oficiales[total_documentos] = nombre_oficial;
+            correos_oficiales[total_documentos] = correo_oficial;
+            telefonos_oficiales[total_documentos] = telefono_oficial;
+            fechas_ingreso_oficial[total_documentos] = fecha_ingreso;
+
+            Console.Write("¿Desea guardar el documento? (S/N): ");
+            string respuesta = Console.ReadLine().ToUpper();
+
+            if (respuesta == "S")
+            {
+                total_documentos++;
+                GuardarDocumentos();
+                Console.WriteLine("Documento guardado.");
+                Console.WriteLine("Código: " + codigos[total_documentos - 1]);
+            }
+            else
+            {
+                Console.WriteLine("El documento no se guardó.");
+            }
+        }
         }
     }
 }
