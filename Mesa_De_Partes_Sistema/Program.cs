@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 
 namespace Mesa_De_Partes_Sistema
@@ -18,6 +19,7 @@ namespace Mesa_De_Partes_Sistema
         static string[] correos_oficiales = new string[500];
         static string[] telefonos_oficiales = new string[500];
         static string[] fechas_ingreso_oficial = new string[500];
+
         static string nombre_oficial = "";
         static string correo_oficial = "";
         static string telefono_oficial = "";
@@ -28,6 +30,7 @@ namespace Mesa_De_Partes_Sistema
         static void Main(string[] args)
         {
             Console.WriteLine("MESA DE PARTES");
+
             string contrasena = "";
             int intentos = 0;
 
@@ -48,12 +51,16 @@ namespace Mesa_De_Partes_Sistema
                 Console.WriteLine("Se acabaron los intentos.");
                 return;
             }
+
             Directory.CreateDirectory(carpeta);
             Directory.CreateDirectory(carpeta + "/SOLICITUD");
             Directory.CreateDirectory(carpeta + "/OFICIO");
             Directory.CreateDirectory(carpeta + "/CARTA");
+
             CargarDocumentos();
+
             Console.WriteLine("\nDatos del oficial encargado");
+
             Console.Write("Nombre: ");
             nombre_oficial = Console.ReadLine();
 
@@ -86,37 +93,48 @@ namespace Mesa_De_Partes_Sistema
                     case 1:
                         RegistrarDocumento();
                         break;
+
                     case 2:
                         BuscarDocumento();
                         break;
+
                     case 3:
                         VerDocumentosDni();
                         break;
+
                     case 4:
                         EliminarDocumento();
                         break;
+
                     case 5:
                         ModificarDocumento();
                         break;
+
                     case 6:
                         ModificarOficial();
                         break;
+
                     case 7:
                         VerSeguimiento();
                         break;
+
                     case 8:
                         MostrarAyuda();
                         break;
+
                     case 9:
                         GuardarSeguimiento();
                         Console.WriteLine("Programa cerrado.");
                         break;
+
                     case 10:
                         Console.Clear();
                         break;
                 }
             }
-            static void RegistrarDocumento()
+        }
+
+        static void RegistrarDocumento()
         {
             if (total_documentos >= max_documentos)
             {
@@ -128,6 +146,7 @@ namespace Mesa_De_Partes_Sistema
             Console.WriteLine("1. Solicitud");
             Console.WriteLine("2. Oficio");
             Console.WriteLine("3. Carta");
+
             int opcion_tipo = LeerNumero("Elija el tipo: ", 1, 3);
 
             if (opcion_tipo == 1)
@@ -167,6 +186,7 @@ namespace Mesa_De_Partes_Sistema
             {
                 total_documentos++;
                 GuardarDocumentos();
+
                 Console.WriteLine("Documento guardado.");
                 Console.WriteLine("Código: " + codigos[total_documentos - 1]);
             }
@@ -175,11 +195,14 @@ namespace Mesa_De_Partes_Sistema
                 Console.WriteLine("El documento no se guardó.");
             }
         }
-          static void BuscarDocumento()
+
+        static void BuscarDocumento()
         {
             Console.Write("Ingrese código, DNI o tipo de documento: ");
             string busqueda = Console.ReadLine().ToUpper();
+
             int encontrados = 0;
+
             for (int i = 0; i < total_documentos; i++)
             {
                 if (codigos[i].ToUpper() == busqueda ||
@@ -236,6 +259,7 @@ namespace Mesa_De_Partes_Sistema
 
             Console.Write("Escriba el código del documento que desea eliminar: ");
             string codigo = Console.ReadLine();
+
             int posicion = -1;
 
             for (int i = 0; i < total_documentos; i++)
@@ -258,13 +282,17 @@ namespace Mesa_De_Partes_Sistema
             }
 
             total_documentos--;
+
             GuardarDocumentos();
+
             Console.WriteLine("Documento eliminado.");
         }
-         static void ModificarDocumento()
+
+        static void ModificarDocumento()
         {
             Console.Write("Ingrese el código del documento: ");
             string codigo = Console.ReadLine();
+
             int posicion = BuscarPorCodigo(codigo);
 
             if (posicion == -1)
@@ -277,6 +305,7 @@ namespace Mesa_De_Partes_Sistema
 
             Console.Write("Nombre actual: " + nombres_usuarios[posicion] + ". Nuevo nombre: ");
             string nombre = Console.ReadLine();
+
             if (nombre != "")
             {
                 nombres_usuarios[posicion] = nombre;
@@ -284,6 +313,7 @@ namespace Mesa_De_Partes_Sistema
 
             Console.Write("DNI actual: " + dni_usuarios[posicion] + ". Nuevo DNI: ");
             string dni = Console.ReadLine();
+
             if (dni != "")
             {
                 if (EsNumeroDeLongitud(dni, 8))
@@ -298,6 +328,7 @@ namespace Mesa_De_Partes_Sistema
 
             Console.Write("Teléfono actual: " + telefonos_usuarios[posicion] + ". Nuevo teléfono: ");
             string telefono = Console.ReadLine();
+
             if (telefono != "")
             {
                 if (EsNumeroDeLongitud(telefono, 9))
@@ -312,12 +343,14 @@ namespace Mesa_De_Partes_Sistema
 
             Console.Write("Descripción actual: " + descripciones[posicion] + ". Nueva descripción: ");
             string descripcion = Console.ReadLine();
+
             if (descripcion != "")
             {
                 descripciones[posicion] = descripcion;
             }
 
             GuardarDocumentos();
+
             Console.WriteLine("Documento modificado.");
         }
 
@@ -334,6 +367,7 @@ namespace Mesa_De_Partes_Sistema
 
             Console.WriteLine("Los nuevos datos se usarán en los documentos que registre desde ahora.");
         }
+
         static void VerSeguimiento()
         {
             Console.WriteLine("\n--- DOCUMENTOS REGISTRADOS ---");
@@ -342,7 +376,11 @@ namespace Mesa_De_Partes_Sistema
             {
                 for (int i = 0; i < total_documentos; i++)
                 {
-                    DateTime fecha_documento = DateTime.ParseExact(fechas[i], "dd/MM/yyyy HH:mm:ss", null);
+                    DateTime fecha_documento = DateTime.ParseExact(
+                        fechas[i],
+                        "dd/MM/yyyy HH:mm:ss",
+                        null
+                    );
 
                     if ((int)fecha_documento.Month == mes)
                     {
@@ -432,6 +470,7 @@ namespace Mesa_De_Partes_Sistema
                             descripciones[i] + "|" + nombres_usuarios[i] + "|" + dni_usuarios[i] + "|" +
                             telefonos_usuarios[i] + "|" + nombres_oficiales[i] + "|" + correos_oficiales[i] + "|" +
                             telefonos_oficiales[i] + "|" + fechas_ingreso_oficial[i];
+
                         archivo.WriteLine(linea);
                     }
                 }
@@ -475,6 +514,7 @@ namespace Mesa_De_Partes_Sistema
                         correos_oficiales[total_documentos] = partes[8];
                         telefonos_oficiales[total_documentos] = partes[9];
                         fechas_ingreso_oficial[total_documentos] = partes[10];
+
                         total_documentos++;
                     }
                 }
@@ -496,9 +536,11 @@ namespace Mesa_De_Partes_Sistema
 
                 for (int i = 0; i < total_documentos; i++)
                 {
-                    if (nombres_oficiales[i] == nombre_oficial && fechas_ingreso_oficial[i] == fecha_ingreso)
+                    if (nombres_oficiales[i] == nombre_oficial &&
+                        fechas_ingreso_oficial[i] == fecha_ingreso)
                     {
-                        archivo.WriteLine(codigos[i] + " - " + tipos[i] + " - DNI: " + dni_usuarios[i] + " - " + nombres_usuarios[i]);
+                        archivo.WriteLine(codigos[i] + " - " + tipos[i] + " - DNI: " +
+                            dni_usuarios[i] + " - " + nombres_usuarios[i]);
                     }
                 }
             }
@@ -568,7 +610,8 @@ namespace Mesa_De_Partes_Sistema
                 Console.Write(mensaje);
                 string entrada = Console.ReadLine();
 
-                if (int.TryParse(entrada, out numero) && numero >= minimo && numero <= maximo)
+                if (int.TryParse(entrada, out numero) &&
+                    numero >= minimo && numero <= maximo)
                 {
                     correcto = true;
                 }
@@ -580,5 +623,8 @@ namespace Mesa_De_Partes_Sistema
 
             return numero;
         }
+    }
+}
+
     }
 }
