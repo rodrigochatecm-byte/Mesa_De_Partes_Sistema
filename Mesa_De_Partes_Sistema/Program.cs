@@ -261,5 +261,79 @@ namespace Mesa_De_Partes_Sistema
             GuardarDocumentos();
             Console.WriteLine("Documento eliminado.");
         }
+         static void ModificarDocumento()
+        {
+            Console.Write("Ingrese el código del documento: ");
+            string codigo = Console.ReadLine();
+            int posicion = BuscarPorCodigo(codigo);
+
+            if (posicion == -1)
+            {
+                Console.WriteLine("No se encontró el documento.");
+                return;
+            }
+
+            Console.WriteLine("Deje vacío un campo si desea conservar el dato actual.");
+
+            Console.Write("Nombre actual: " + nombres_usuarios[posicion] + ". Nuevo nombre: ");
+            string nombre = Console.ReadLine();
+            if (nombre != "")
+            {
+                nombres_usuarios[posicion] = nombre;
+            }
+
+            Console.Write("DNI actual: " + dni_usuarios[posicion] + ". Nuevo DNI: ");
+            string dni = Console.ReadLine();
+            if (dni != "")
+            {
+                if (EsNumeroDeLongitud(dni, 8))
+                {
+                    dni_usuarios[posicion] = dni;
+                }
+                else
+                {
+                    Console.WriteLine("El DNI debe tener 8 dígitos. Se mantiene el DNI anterior.");
+                }
+            }
+
+            Console.Write("Teléfono actual: " + telefonos_usuarios[posicion] + ". Nuevo teléfono: ");
+            string telefono = Console.ReadLine();
+            if (telefono != "")
+            {
+                if (EsNumeroDeLongitud(telefono, 9))
+                {
+                    telefonos_usuarios[posicion] = telefono;
+                }
+                else
+                {
+                    Console.WriteLine("El teléfono debe tener 9 dígitos. Se mantiene el teléfono anterior.");
+                }
+            }
+
+            Console.Write("Descripción actual: " + descripciones[posicion] + ". Nueva descripción: ");
+            string descripcion = Console.ReadLine();
+            if (descripcion != "")
+            {
+                descripciones[posicion] = descripcion;
+            }
+
+            GuardarDocumentos();
+            Console.WriteLine("Documento modificado.");
+        }
+
+        static void ModificarOficial()
+        {
+            Console.Write("Nuevo nombre del oficial: ");
+            nombre_oficial = Console.ReadLine();
+
+            Console.Write("Nuevo correo electrónico: ");
+            correo_oficial = Console.ReadLine();
+
+            telefono_oficial = LeerTelefono("Nuevo teléfono (9 dígitos): ");
+            fecha_ingreso = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+
+            Console.WriteLine("Los nuevos datos se usarán en los documentos que registre desde ahora.");
+        }
+
     }
 }
