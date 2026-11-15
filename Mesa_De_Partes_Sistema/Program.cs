@@ -334,6 +334,251 @@ namespace Mesa_De_Partes_Sistema
 
             Console.WriteLine("Los nuevos datos se usarán en los documentos que registre desde ahora.");
         }
+        static void VerSeguimiento()
+        {
+            Console.WriteLine("\n--- DOCUMENTOS REGISTRADOS ---");
 
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                for (int i = 0; i < total_documentos; i++)
+                {
+                    DateTime fecha_documento = DateTime.ParseExact(fechas[i], "dd/MM/yyyy HH:mm:ss", null);
+
+                    if ((int)fecha_documento.Month == mes)
+                    {
+                        MostrarDocumento(i);
+                    }
+                }
+            }
+
+            Console.WriteLine("\nEl seguimiento completo está en: " + carpeta + "/encargados_y_seguimiento.txt");
+        }
+
+        static void MostrarAyuda()
+        {
+            Console.WriteLine("\nAYUDA DE LAS OPCIONES");
+            Console.WriteLine("1. Registrar un documento nuevo.");
+            Console.WriteLine("2. Buscar documentos por código, DNI o tipo.");
+            Console.WriteLine("3. Contar los documentos registrados para un DNI.");
+            Console.WriteLine("4. Eliminar un documento eligiéndolo por su código y DNI.");
+            Console.WriteLine("5. Cambiar datos del usuario o la descripción del documento.");
+            Console.WriteLine("6. Cambiar los datos del oficial para próximos registros.");
+            Console.WriteLine("7. Ver el seguimiento de documentos ordenado por mes.");
+            Console.WriteLine("8. Mostrar esta ayuda.");
+            Console.WriteLine("9. Guardar el seguimiento y salir.");
+        }
+
+        static void MostrarDocumento(int posicion)
+        {
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine("Código: " + codigos[posicion]);
+            Console.WriteLine("Fecha: " + fechas[posicion]);
+            Console.WriteLine("Tipo: " + tipos[posicion]);
+            Console.WriteLine("Usuario: " + nombres_usuarios[posicion]);
+            Console.WriteLine("DNI: " + dni_usuarios[posicion]);
+            Console.WriteLine("Teléfono usuario: " + telefonos_usuarios[posicion]);
+            Console.WriteLine("Descripción: " + descripciones[posicion]);
+            Console.WriteLine("Oficial: " + nombres_oficiales[posicion]);
+            Console.WriteLine("Correo oficial: " + correos_oficiales[posicion]);
+            Console.WriteLine("Teléfono oficial: " + telefonos_oficiales[posicion]);
+        }
+
+        static int BuscarPorCodigo(string codigo)
+        {
+            for (int i = 0; i < total_documentos; i++)
+            {
+                if (codigos[i] == codigo)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        static void CopiarDocumento(int origen, int destino)
+        {
+            codigos[destino] = codigos[origen];
+            fechas[destino] = fechas[origen];
+            tipos[destino] = tipos[origen];
+            descripciones[destino] = descripciones[origen];
+            nombres_usuarios[destino] = nombres_usuarios[origen];
+            dni_usuarios[destino] = dni_usuarios[origen];
+            telefonos_usuarios[destino] = telefonos_usuarios[origen];
+            nombres_oficiales[destino] = nombres_oficiales[origen];
+            correos_oficiales[destino] = correos_oficiales[origen];
+            telefonos_oficiales[destino] = telefonos_oficiales[origen];
+            fechas_ingreso_oficial[destino] = fechas_ingreso_oficial[origen];
+        }
+
+        static void GuardarDocumentos()
+        {
+            GuardarTipo("SOLICITUD");
+            GuardarTipo("OFICIO");
+            GuardarTipo("CARTA");
+        }
+
+        static void GuardarTipo(string tipo)
+        {
+            string ruta = carpeta + "/" + tipo + "/documento.txt";
+
+            using (StreamWriter archivo = new StreamWriter(ruta))
+            {
+                for (int i = 0; i < total_documentos; i++)
+                {
+                    if (tipos[i] == tipo)
+                    {
+                        string linea = codigos[i] + "|" + fechas[i] + "|" + tipos[i] + "|" +
+                            descripciones[i] + "|" + nombres_usuarios[i] + "|" + dni_usuarios[i] + "|" +
+                            telefonos_usuarios[i] + "|" + nombres_oficiales[i] + "|" + correos_oficiales[i] + "|" +
+                            telefonos_oficiales[i] + "|" + fechas_ingreso_oficial[i];
+                        archivo.WriteLine(linea);
+                    }
+                }
+            }
+        }
+
+        static void CargarDocumentos()
+        {
+            CargarTipo("SOLICITUD");
+            CargarTipo("OFICIO");
+            CargarTipo("CARTA");
+        }
+
+        static void CargarTipo(string tipo)
+        {
+            string ruta = carpeta + "/" + tipo + "/documento.txt";
+
+            if (!File.Exists(ruta))
+            {
+                return;
+            }
+
+            using (StreamReader archivo = new StreamReader(ruta))
+            {
+                string linea;
+
+                while ((linea = archivo.ReadLine()) != null && total_documentos < max_documentos)
+                {
+                    string[] partes = linea.Split('|');
+
+                    if (partes.Length == 11)
+                    {
+                        codigos[total_documentos] = partes[0];
+                        fechas[total_documentos] = partes[1];
+                        tipos[total_documentos] = partes[2];
+                        descripciones[total_documentos] = partes[3];
+                        nombres_usuarios[total_documentos] = partes[4];
+                        dni_usuarios[total_documentos] = partes[5];
+                        telefonos_usuarios[total_documentos] = partes[6];
+                        nombres_oficiales[total_documentos] = partes[7];
+                        correos_oficiales[total_documentos] = partes[8];
+                        telefonos_oficiales[total_documentos] = partes[9];
+                        fechas_ingreso_oficial[total_documentos] = partes[10];
+                        total_documentos++;
+                    }
+                }
+            }
+        }
+
+        static void GuardarSeguimiento()
+        {
+            string ruta = carpeta + "/encargados_y_seguimiento.txt";
+
+            using (StreamWriter archivo = new StreamWriter(ruta, true))
+            {
+                archivo.WriteLine("----------------------------------------");
+                archivo.WriteLine("Oficial: " + nombre_oficial);
+                archivo.WriteLine("Correo: " + correo_oficial);
+                archivo.WriteLine("Teléfono: " + telefono_oficial);
+                archivo.WriteLine("Fecha de ingreso: " + fecha_ingreso);
+                archivo.WriteLine("Fecha de salida: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+
+                for (int i = 0; i < total_documentos; i++)
+                {
+                    if (nombres_oficiales[i] == nombre_oficial && fechas_ingreso_oficial[i] == fecha_ingreso)
+                    {
+                        archivo.WriteLine(codigos[i] + " - " + tipos[i] + " - DNI: " + dni_usuarios[i] + " - " + nombres_usuarios[i]);
+                    }
+                }
+            }
+        }
+
+        static string LeerDni(string mensaje)
+        {
+            string dni = "";
+
+            while (!EsNumeroDeLongitud(dni, 8))
+            {
+                Console.Write(mensaje);
+                dni = Console.ReadLine();
+
+                if (!EsNumeroDeLongitud(dni, 8))
+                {
+                    Console.WriteLine("El DNI debe tener exactamente 8 dígitos.");
+                }
+            }
+
+            return dni;
+        }
+
+        static string LeerTelefono(string mensaje)
+        {
+            string telefono = "";
+
+            while (!EsNumeroDeLongitud(telefono, 9))
+            {
+                Console.Write(mensaje);
+                telefono = Console.ReadLine();
+
+                if (!EsNumeroDeLongitud(telefono, 9))
+                {
+                    Console.WriteLine("El teléfono debe tener exactamente 9 dígitos.");
+                }
+            }
+
+            return telefono;
+        }
+
+        static bool EsNumeroDeLongitud(string texto, int cantidad)
+        {
+            if (texto == null || texto.Length != cantidad)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < texto.Length; i++)
+            {
+                if (texto[i] < '0' || texto[i] > '9')
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        static int LeerNumero(string mensaje, int minimo, int maximo)
+        {
+            int numero = 0;
+            bool correcto = false;
+
+            while (!correcto)
+            {
+                Console.Write(mensaje);
+                string entrada = Console.ReadLine();
+
+                if (int.TryParse(entrada, out numero) && numero >= minimo && numero <= maximo)
+                {
+                    correcto = true;
+                }
+                else
+                {
+                    Console.WriteLine("Ingrese un número del " + minimo + " al " + maximo + ".");
+                }
+            }
+
+            return numero;
+        }
     }
 }
