@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 
 namespace Mesa_De_Partes_Sistema
@@ -163,7 +162,7 @@ namespace Mesa_De_Partes_Sistema
             }
 
             fechas[total_documentos] = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            codigos[total_documentos] = "DOC-" + DateTime.Now.ToString("yyyyMMddHHmmss") + total_documentos;
+            codigos[total_documentos] = "DOC-" + total_documentos + "-" + DateTime.Now.ToString("yyyyMMdd") ;
 
             Console.Write("Nombre del usuario: ");
             nombres_usuarios[total_documentos] = Console.ReadLine();
@@ -623,8 +622,5 @@ namespace Mesa_De_Partes_Sistema
 
             return numero;
         }
-    }
-}
-
     }
 }
